@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Machine Monitoring</title>
+
+<link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+
+<header class="system-header">
+
+    <div class="system-title">
+
+        <h1>Machine Monitoring</h1>
+
+        <p>
+            Plant Runtime Acquisition System
+        </p>
+
+    </div>
+
+
+    <div class="system-clock">
+
+        <strong id="system-time">
+            --:--:--
+        </strong>
+
+        <span id="system-date">
+            --
+        </span>
+
+    </div>
+
+</header>
+
+
+<nav class="system-nav">
+
+    <a href="/" class="active">
+        Dashboard
+    </a>
+
+    <a href="/history">
+        7-Day History
+    </a>
+
+    <a href="/custom-history">
+        Custom History
+    </a>
+
+    <a href="/setup">
+        Machine Configuration
+    </a>
+
+</nav>
+
+
+<main class="system-page">
+
+    <div class="page-heading">
+
+        <h2>Machine Status</h2>
+
+        <p>
+            Current production monitoring information
+        </p>
+
+    </div>
+
+
+    <section class="machine-information">
+
+        <div class="machine-field">
+
+            <span class="field-label">
+                Machine
+            </span>
+
+            <span
+                class="machine-name"
+                id="machineName"
+            >
+                Loading...
+            </span>
+
+        </div>
+
+
+        <div class="connection-state">
+
+            <span
+                class="connection-lamp"
+                id="connectionIndicator"
+            ></span>
+
+            <span id="connectionText">
+                CONNECTING
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <section
+        class="break-notice"
+        id="breakNotice"
+    >
+
+        <strong id="breakTitle">
+            SCHEDULED BREAK
+        </strong>
+
+        <span id="breakDescription">
+            Machine signal acquisition continues.
+        </span>
+
+    </section>
+
+
+    <section class="process-status">
+
+        <div class="process-cell">
+
+            <div class="process-label">
+                Machine State
+            </div>
+
+
+            <div class="process-value state-value">
+
+                <span
+                    class="state-lamp"
+                    id="machineStatusDot"
+                ></span>
+
+                <span
+                    class="state-text"
+                    id="machineStatus"
+                >
+                    NO DATA
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="process-cell">
+
+            <div class="process-label">
+                Active Shift
+            </div>
+
+            <div
+                class="process-value"
+                id="currentShift"
+            >
+                --
+            </div>
+
+        </div>
+
+
+        <div class="process-cell">
+
+            <div class="process-label">
+                Uptime
+            </div>
+
+            <div
+                class="process-value runtime-value"
+                id="uptime"
+            >
+                00:00:00
+            </div>
+
+        </div>
+
+
+        <div class="process-cell">
+
+            <div class="process-label">
+                Downtime
+            </div>
+
+            <div
+                class="process-value runtime-value"
+                id="downtime"
+            >
+                00:00:00
+            </div>
+
+        </div>
+
+
+        <div class="process-cell">
+
+            <div class="process-label">
+                Efficiency
+            </div>
+
+            <div
+                class="process-value"
+                id="efficiency"
+            >
+                0.00%
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="engineering-section">
+
+        <div class="section-title">
+
+            <h3>
+                Shift Performance
+            </h3>
+
+            <span id="todayDate">
+                --
+            </span>
+
+        </div>
+
+
+        <div class="table-scroll">
+
+            <table class="data-table">
+
+                <thead>
+
+                <tr>
+                    <th>Shift</th>
+                    <th>Uptime</th>
+                    <th>Downtime</th>
+                    <th>Efficiency</th>
+                    <th>Status</th>
+                </tr>
+
+                </thead>
+
+
+                <tbody id="shiftSummary">
+
+                <tr>
+
+                    <td colspan="5">
+                        Loading shift information...
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <section class="engineering-section">
+
+        <div class="section-title">
+
+            <h3>
+                Machine State History
+            </h3>
+
+            <span id="lastUpdated">
+                Last signal: --
+            </span>
+
+        </div>
+
+
+        <div class="timeline-area">
+
+            <div class="timeline-scale">
+
+                <span>START</span>
+                <span>25%</span>
+                <span>50%</span>
+                <span>75%</span>
+                <span>NOW</span>
+
+            </div>
+
+
+            <div
+                class="machine-timeline"
+                id="timeline"
+            >
+
+                <div class="timeline-empty">
+                    Waiting for machine events
+                </div>
+
+            </div>
+
+
+            <div class="timeline-legend">
+
+                <div class="legend-item">
+
+                    <span class="legend-box up"></span>
+
+                    Running
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span class="legend-box down"></span>
+
+                    Stopped
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer class="system-footer">
+
+    Machine Runtime Monitoring System
+
+</footer>
+
+
+<script src="/static/js/dashboard.js"></script>
+
+</body>
+
+</html>

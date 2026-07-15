@@ -1,0 +1,25 @@
+[Unit]
+Description=Weldomat Machine Uptime/Downtime Monitor
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/weldomat_monitor
+EnvironmentFile=/home/pi/weldomat_monitor/.env
+ExecStart=/home/pi/weldomat_monitor/venv/bin/python -m app.monitor
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/pi/weldomat_monitor/logs/monitor.stdout.log
+StandardError=append:/home/pi/weldomat_monitor/logs/monitor.stderr.log
+
+# --- Install / enable ---
+# sudo cp systemd/weldomat-monitor.service /etc/systemd/system/
+# sudo systemctl daemon-reload
+# sudo systemctl enable --now weldomat-monitor
+# journalctl -u weldomat-monitor -f     (or tail logs/monitor.log)
+
+[Install]
+WantedBy=multi-user.target

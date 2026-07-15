@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Custom History</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/css/custom_history.css?v=3"
+    >
+</head>
+
+<body>
+
+<header class="system-header">
+
+    <div class="system-title">
+        <h1>Machine Monitoring</h1>
+        <p>Plant Runtime Acquisition System</p>
+    </div>
+
+    <div class="system-clock">
+        <strong id="system-time">--:--:--</strong>
+        <span id="system-date">--</span>
+    </div>
+
+</header>
+
+<nav class="system-nav">
+
+    <a href="/">Dashboard</a>
+
+    <a href="/history">
+        7-Day History
+    </a>
+
+    <a href="/custom-history" class="active">
+        Custom History
+    </a>
+
+    <a href="/setup">
+        Machine Configuration
+    </a>
+
+</nav>
+
+<main class="system-page">
+
+    <div class="page-heading">
+        <h2>Historical Data Query</h2>
+
+        <p>
+            Retrieve machine performance records by
+            date and production shift
+        </p>
+    </div>
+
+    <section class="engineering-section">
+
+        <div class="section-title">
+            <h3>Query Parameters</h3>
+            <span>Select monitoring records</span>
+        </div>
+
+        <form
+            id="history-filter-form"
+            class="configuration-block"
+        >
+
+            <div class="form-grid">
+
+                <div class="form-field">
+
+                    <label for="machine-select">
+                        Machine
+                    </label>
+
+                    <select
+                        id="machine-select"
+                        required
+                    >
+                        <option value="">
+                            Loading machines...
+                        </option>
+                    </select>
+
+                </div>
+
+                <div class="form-field">
+
+                    <label for="from-date">
+                        From Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="from-date"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-field">
+
+                    <label for="to-date">
+                        To Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="to-date"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div
+                class="checkbox-row"
+                style="margin-top: 14px;"
+            >
+
+                <span class="field-label">
+                    Production Shifts
+                </span>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        value="A"
+                        class="shift-checkbox"
+                        checked
+                    >
+                    Shift A
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        value="B"
+                        class="shift-checkbox"
+                        checked
+                    >
+                    Shift B
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        value="C"
+                        class="shift-checkbox"
+                        checked
+                    >
+                    Shift C
+                </label>
+
+            </div>
+
+            <div
+                id="filter-message"
+                class="form-message"
+            ></div>
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                    id="apply-filter-button"
+                >
+                    Retrieve Records
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+    <section class="summary-row">
+
+        <div class="summary-item">
+
+            <span>
+                Weighted Efficiency
+            </span>
+
+            <strong
+                class="efficiency"
+                id="custom-efficiency"
+            >
+                0.00%
+            </strong>
+
+        </div>
+
+        <div class="summary-item">
+
+            <span>Total Uptime</span>
+
+            <strong id="custom-uptime">
+                00:00:00
+            </strong>
+
+        </div>
+
+        <div class="summary-item">
+
+            <span>Total Downtime</span>
+
+            <strong id="custom-downtime">
+                00:00:00
+            </strong>
+
+        </div>
+
+    </section>
+
+    <div class="chart-grid">
+
+        <section class="engineering-section">
+
+            <div class="section-title">
+
+                <h3>Runtime Distribution</h3>
+
+                <span>
+                    Uptime and downtime
+                </span>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas
+                    id="custom-doughnut-chart"
+                ></canvas>
+
+            </div>
+
+        </section>
+
+        <section class="engineering-section">
+
+            <div class="section-title">
+
+                <h3>Shift Runtime Comparison</h3>
+
+                <span>
+                    Duration per shift record
+                </span>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas
+                    id="custom-bar-chart"
+                ></canvas>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <section class="engineering-section">
+
+        <div class="section-title">
+
+            <h3>Efficiency Trend</h3>
+
+            <span>
+                Selected monitoring records
+            </span>
+
+        </div>
+
+        <div class="chart-container-large">
+
+            <canvas
+                id="custom-efficiency-chart"
+            ></canvas>
+
+        </div>
+
+    </section>
+
+    <section class="engineering-section">
+
+        <div class="section-title">
+
+            <h3>Historical Shift Records</h3>
+
+            <span id="result-description">
+                Apply query parameters to retrieve data
+            </span>
+
+        </div>
+
+        <div class="table-scroll">
+
+            <table class="data-table">
+
+                <thead>
+
+                <tr>
+                    <th>Date</th>
+                    <th>Shift</th>
+                    <th>Uptime</th>
+                    <th>Downtime</th>
+                    <th>Efficiency</th>
+                    <th>Status</th>
+                </tr>
+
+                </thead>
+
+                <tbody id="custom-history-body">
+
+                <tr>
+
+                    <td colspan="6">
+                        No records loaded.
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="system-footer">
+    Machine Runtime Monitoring System
+</footer>
+
+<script src="/static/vendor/chart.umd.min.js"></script>
+<script src="/static/js/custom_history.js"></script>
+
+</body>
+
+</html>

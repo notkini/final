@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>7-Day History</title>
+
+<link rel="stylesheet" href="/static/css/history.css">
+</head>
+
+<body>
+
+<header class="system-header">
+    <div class="system-title">
+        <h1>Machine Monitoring</h1>
+        <p>Plant Runtime Acquisition System</p>
+    </div>
+
+    <div class="system-clock">
+        <strong id="system-time">--:--:--</strong>
+        <span id="system-date">--</span>
+    </div>
+</header>
+
+<nav class="system-nav">
+    <a href="/">Dashboard</a>
+    <a href="/history" class="active">7-Day History</a>
+    <a href="/custom-history">Custom History</a>
+    <a href="/setup">Machine Configuration</a>
+</nav>
+
+<main class="system-page">
+
+    <div class="page-heading">
+        <h2 id="machine-name">Loading machine...</h2>
+        <p id="history-range">Loading historical records...</p>
+    </div>
+
+    <section class="summary-row">
+
+        <div class="summary-item">
+            <span>Weighted Efficiency</span>
+            <strong
+                class="efficiency"
+                id="overall-efficiency"
+            >
+                0.00%
+            </strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Total Uptime</span>
+            <strong id="total-uptime">
+                00:00:00
+            </strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Total Downtime</span>
+            <strong id="total-downtime">
+                00:00:00
+            </strong>
+        </div>
+
+    </section>
+
+    <div class="chart-grid">
+
+        <section class="engineering-section">
+
+            <div class="section-title">
+                <h3>Uptime / Downtime</h3>
+                <span>7-day monitored duration</span>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="uptime-downtime-chart"></canvas>
+            </div>
+
+        </section>
+
+        <section class="engineering-section">
+
+            <div class="section-title">
+                <h3>Efficiency Trend</h3>
+                <span>Daily weighted efficiency</span>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="efficiency-trend-chart"></canvas>
+            </div>
+
+        </section>
+
+    </div>
+
+    <section class="engineering-section">
+
+        <div class="section-title">
+            <h3>Daily Performance</h3>
+            <span>Combined production shift data</span>
+        </div>
+
+        <div class="table-scroll">
+
+            <table class="data-table">
+
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Uptime</th>
+                    <th>Downtime</th>
+                    <th>Efficiency</th>
+                </tr>
+                </thead>
+
+                <tbody id="daily-history-body">
+
+                <tr>
+                    <td colspan="4">
+                        Loading historical data...
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <section class="engineering-section">
+
+        <div class="section-title">
+            <h3>Shift Performance Records</h3>
+            <span>Individual shift calculations</span>
+        </div>
+
+        <div class="table-scroll">
+
+            <table class="data-table">
+
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Shift</th>
+                    <th>Uptime</th>
+                    <th>Downtime</th>
+                    <th>Efficiency</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+
+                <tbody id="shift-history-body">
+
+                <tr>
+                    <td colspan="6">
+                        Loading shift records...
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="system-footer">
+    Machine Runtime Monitoring System
+</footer>
+
+<script src="/static/vendor/chart.umd.min.js"></script>
+<script src="/static/js/history.js"></script>
+
+</body>
+
+</html>

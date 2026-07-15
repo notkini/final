@@ -1,0 +1,48 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+venv/
+
+# Logs
+logs/
+*.log
+
+# Local SQLite queue
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Backups
+backups/
+*.bak
+*.dump
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pytest
+.pytest_cache/
+.coverage
+
+# Alembic cache
+alembic/__pycache__/
+alembic/versions/__pycache__/
+
+# Temporary files
+*.tmp
+*.swp
+*~

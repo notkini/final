@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Machine Configuration</title>
+
+<link rel="stylesheet" href="/static/css/setup.css">
+
+</head>
+
+<body>
+
+<header class="system-header">
+
+    <div class="system-title">
+
+        <h1>Machine Monitoring</h1>
+
+        <p>
+            Plant Runtime Acquisition System
+        </p>
+
+    </div>
+
+    <div class="system-clock">
+
+        <strong id="system-time">
+            --:--:--
+        </strong>
+
+        <span id="system-date">
+            --
+        </span>
+
+    </div>
+
+</header>
+
+<nav class="system-nav">
+
+    <a href="/">
+        Dashboard
+    </a>
+
+    <a href="/history">
+        7-Day History
+    </a>
+
+    <a href="/custom-history">
+        Custom History
+    </a>
+
+    <a href="/setup" class="active">
+        Machine Configuration
+    </a>
+
+</nav>
+
+<main class="system-page">
+
+    <div class="page-heading">
+
+        <h2>Monitor Configuration</h2>
+
+        <p>
+            Assign the monitoring unit to a machine
+            and configure production schedules
+        </p>
+
+    </div>
+
+    <section class="engineering-section">
+
+        <div class="section-title">
+
+            <h3>
+                Machine Assignment
+            </h3>
+
+            <span>
+                Raspberry Pi monitoring target
+            </span>
+
+        </div>
+
+        <div class="configuration-block">
+
+            <div class="mode-selector">
+
+                <button
+                    type="button"
+                    id="existing-mode-button"
+                    class="mode-button active"
+                >
+                    Existing Machine
+                </button>
+
+                <button
+                    type="button"
+                    id="new-mode-button"
+                    class="mode-button"
+                >
+                    Register New Machine
+                </button>
+
+            </div>
+
+            <div
+                class="form-field"
+                id="existing-machine-group"
+            >
+
+                <label for="machine-select">
+                    Registered Machine
+                </label>
+
+                <select id="machine-select">
+
+                    <option value="">
+                        Loading machine registry...
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div
+                class="form-field"
+                id="new-machine-group"
+                hidden
+            >
+
+                <label for="machine-name">
+                    Machine Name
+                </label>
+
+                <input
+                    type="text"
+                    id="machine-name"
+                    placeholder="Enter machine identifier"
+                >
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="engineering-section">
+
+        <div class="section-title">
+
+            <h3>Production Shift Schedule</h3>
+
+            <span>
+                Machine-specific shift configuration
+            </span>
+
+        </div>
+
+        <div class="shift-configuration">
+
+            <div class="shift-config-cell">
+
+                <h4>Shift A</h4>
+
+                <div class="form-field">
+
+                    <label for="shift-a-start">
+                        Start Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="shift-a-start"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-field">
+
+                    <label for="shift-a-end">
+                        End Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="shift-a-end"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="shift-config-cell">
+
+                <h4>Shift B</h4>
+
+                <div class="form-field">
+
+                    <label for="shift-b-start">
+                        Start Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="shift-b-start"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-field">
+
+                    <label for="shift-b-end">
+                        End Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="shift-b-end"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="shift-config-cell">
+
+                <h4>Shift C</h4>
+
+                <div class="form-field">
+
+                    <label for="shift-c-start">
+                        Start Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="shift-c-start"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-field">
+
+                    <label for="shift-c-end">
+                        End Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="shift-c-end"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="engineering-section">
+
+        <div class="section-title">
+
+            <h3>Scheduled Break Times</h3>
+
+            <span>
+                Each configured break has a fixed duration of one hour
+            </span>
+
+        </div>
+
+        <div class="shift-configuration">
+
+            <div class="shift-config-cell">
+
+                <h4>Breakfast</h4>
+
+                <div class="form-field">
+
+                    <label for="breakfast-start">
+                        Start Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="breakfast-start"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="shift-config-cell">
+
+                <h4>Lunch</h4>
+
+                <div class="form-field">
+
+                    <label for="lunch-start">
+                        Start Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="lunch-start"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="shift-config-cell">
+
+                <h4>Dinner</h4>
+
+                <div class="form-field">
+
+                    <label for="dinner-start">
+                        Start Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="dinner-start"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div
+        id="form-message"
+        class="form-message"
+    ></div>
+
+    <div class="form-actions">
+
+        <button
+            type="button"
+            class="primary-button"
+            id="save-button"
+        >
+            Apply Configuration
+        </button>
+
+    </div>
+
+</main>
+
+<footer class="system-footer">
+    Machine Runtime Monitoring System
+</footer>
+
+<script src="/static/js/setup.js"></script>
+
+</body>
+
+</html>
