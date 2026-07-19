@@ -131,13 +131,20 @@ async function loadMachines() {
         }
     );
 
+    const data = await response.json();
+
     if (!response.ok) {
         throw new Error(
             "Unable to load machines"
         );
     }
 
-    const data = await response.json();
+    if (isUnassignedMachine(data)) {
+
+        showUnassignedMachine();
+
+        return;
+    }
 
     machineSelect.innerHTML = "";
 
@@ -601,6 +608,31 @@ function clearResults() {
 }
 
 
+function showUnassignedMachine() {
+    clearResults();
+
+    machineSelect.innerHTML = `
+        <option value="">
+            No machine assigned
+        </option>
+    `;
+
+    machineSelect.disabled = true;
+
+    applyButton.disabled = true;
+
+    document.getElementById(
+        "result-description"
+    ).textContent =
+        "Assign a machine from the Setup page";
+
+    showMessage(
+        "No machine assigned.",
+        "error"
+    );
+}
+
+
 async function loadCustomHistory() {
     const machineId = machineSelect.value;
 
@@ -683,7 +715,6 @@ async function loadCustomHistory() {
 
         const data = await response.json();
 
-
         if (!response.ok) {
             showMessage(
                 data.detail
@@ -694,6 +725,10 @@ async function loadCustomHistory() {
             return;
         }
 
+        if (isUnassignedMachine(data)) {
+            showUnassignedMachine();
+            return;
+        }
 
         document.getElementById(
             "custom-efficiency"
@@ -792,6 +827,10 @@ async function initializePage() {
 
     try {
         await loadMachines();
+
+        if (machineSelect.disabled) {
+            return;
+        }
 
         if (machineSelect.value) {
             await loadCustomHistory();

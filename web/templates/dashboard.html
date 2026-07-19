@@ -1,248 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Machine Monitoring</title>
-
-<link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
 </head>
-
 <body>
 
 <header class="system-header">
+<div class="system-title">
 
-    <div class="system-title">
+    <h1 class="siemens-logo">SIEMENS</h1>
 
-        <h1>Machine Monitoring</h1>
+    <p class="system-subtitle">
+        Plant Runtime Acquisition System
+    </p>
 
-        <p>
-            Plant Runtime Acquisition System
-        </p>
-
-    </div>
-
+</div>
 
     <div class="system-clock">
-
         <strong id="system-time">
             --:--:--
         </strong>
-
         <span id="system-date">
             --
         </span>
-
     </div>
-
 </header>
 
-
 <nav class="system-nav">
-
     <a href="/" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 13l3-4"></path><path d="M9 3h6"></path></svg>
         Dashboard
     </a>
-
     <a href="/history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 16l4-6 3 3 5-8"></path></svg>
         7-Day History
     </a>
-
     <a href="/custom-history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="11" cy="18" r="1.6"></circle></svg>
         Custom History
     </a>
-
     <a href="/setup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"></path></svg>
         Machine Configuration
     </a>
-
 </nav>
 
-
 <main class="system-page">
-
     <div class="page-heading">
-
         <h2>Machine Status</h2>
-
-        <p>
-            Current production monitoring information
-        </p>
-
+        <p>Current production monitoring information</p>
     </div>
 
-
     <section class="machine-information">
-
         <div class="machine-field">
-
             <span class="field-label">
                 Machine
             </span>
-
-            <span
-                class="machine-name"
-                id="machineName"
-            >
+            <span class="machine-name" id="machineName">
                 Loading...
             </span>
-
         </div>
 
-
         <div class="connection-state">
-
-            <span
-                class="connection-lamp"
-                id="connectionIndicator"
-            ></span>
-
+            <span class="signal-indicator" id="connectionIndicator"></span>
             <span id="connectionText">
                 CONNECTING
             </span>
-
         </div>
-
     </section>
 
-
-    <section
-        class="break-notice"
-        id="breakNotice"
-    >
-
+    <section class="break-notice" id="breakNotice">
         <strong id="breakTitle">
             SCHEDULED BREAK
         </strong>
-
         <span id="breakDescription">
             Machine signal acquisition continues.
         </span>
-
     </section>
 
-
     <section class="process-status">
-
         <div class="process-cell">
-
             <div class="process-label">
                 Machine State
             </div>
-
-
             <div class="process-value state-value">
-
-                <span
-                    class="state-lamp"
-                    id="machineStatusDot"
-                ></span>
-
-                <span
-                    class="state-text"
-                    id="machineStatus"
-                >
+                <span class="state-lamp" id="machineStatusDot"></span>
+                <span class="state-text" id="machineStatus">
                     NO DATA
                 </span>
-
             </div>
-
         </div>
 
-
         <div class="process-cell">
-
             <div class="process-label">
                 Active Shift
             </div>
-
-            <div
-                class="process-value"
-                id="currentShift"
-            >
+            <div class="process-value" id="currentShift">
                 --
             </div>
-
         </div>
 
-
         <div class="process-cell">
-
             <div class="process-label">
                 Uptime
             </div>
-
-            <div
-                class="process-value runtime-value"
-                id="uptime"
-            >
+            <div class="process-value runtime-value" id="uptime">
                 00:00:00
             </div>
-
         </div>
 
-
         <div class="process-cell">
-
             <div class="process-label">
                 Downtime
             </div>
-
-            <div
-                class="process-value runtime-value"
-                id="downtime"
-            >
+            <div class="process-value runtime-value" id="downtime">
                 00:00:00
             </div>
-
         </div>
 
-
         <div class="process-cell">
-
             <div class="process-label">
                 Efficiency
             </div>
-
-            <div
-                class="process-value"
-                id="efficiency"
-            >
+            <div class="process-value" id="efficiency">
                 0.00%
             </div>
-
+            <div class="efficiency-progress">
+                <div id="efficiencyBar" class="efficiency-progress-fill"></div>
+            </div>
         </div>
-
     </section>
 
-
     <section class="engineering-section">
-
         <div class="section-title">
-
-            <h3>
-                Shift Performance
-            </h3>
-
+            <h3>Shift Performance</h3>
             <span id="todayDate">
                 --
             </span>
-
         </div>
 
-
         <div class="table-scroll">
-
             <table class="data-table">
-
                 <thead>
-
                 <tr>
                     <th>Shift</th>
                     <th>Uptime</th>
@@ -250,106 +154,75 @@
                     <th>Efficiency</th>
                     <th>Status</th>
                 </tr>
-
                 </thead>
-
-
                 <tbody id="shiftSummary">
-
                 <tr>
-
                     <td colspan="5">
                         Loading shift information...
                     </td>
-
                 </tr>
-
                 </tbody>
-
             </table>
-
         </div>
-
     </section>
 
-
     <section class="engineering-section">
-
         <div class="section-title">
-
-            <h3>
-                Machine State History
-            </h3>
-
+            <h3>Machine State History</h3>
             <span id="lastUpdated">
                 Last signal: --
             </span>
-
         </div>
-
 
         <div class="timeline-area">
 
-            <div class="timeline-scale">
+            <!-- Hour labels; populated by dashboard.js -->
+            <div id="timelineScale" class="timeline-scale"></div>
 
-                <span>START</span>
-                <span>25%</span>
-                <span>50%</span>
-                <span>75%</span>
-                <span>NOW</span>
+            <!-- Single positioning context shared by the grid,
+                 the state bar and the now-line, so both stay on
+                 the same time axis. -->
+            <div class="timeline-canvas">
 
-            </div>
+                <div id="timelineGrid" class="timeline-grid"></div>
 
+                <div id="timeline" class="machine-timeline"></div>
 
-            <div
-                class="machine-timeline"
-                id="timeline"
-            >
-
-                <div class="timeline-empty">
-                    Waiting for machine events
+                <div id="nowIndicator" class="now-indicator">
+                    <span class="now-label">NOW</span>
                 </div>
 
             </div>
-
 
             <div class="timeline-legend">
 
                 <div class="legend-item">
-
                     <span class="legend-box up"></span>
-
                     Running
-
                 </div>
 
-
                 <div class="legend-item">
-
                     <span class="legend-box down"></span>
-
                     Stopped
-
                 </div>
 
             </div>
 
+            <!-- Meal timings shown as plain text, not a colored
+                 overlay; populated by dashboard.js -->
+            <div id="mealMarkers" class="meal-timings"></div>
+
         </div>
 
     </section>
-
 </main>
 
-
 <footer class="system-footer">
-
     Machine Runtime Monitoring System
-
 </footer>
 
-
+<script src="/static/js/common.js"></script>
 <script src="/static/js/dashboard.js"></script>
 
 </body>
-
 </html>

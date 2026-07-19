@@ -1,7 +1,6 @@
 let uptimeDowntimeChart = null;
 let efficiencyTrendChart = null;
 
-
 function formatDuration(seconds) {
     seconds = Math.max(
         0,
@@ -9,45 +8,26 @@ function formatDuration(seconds) {
     );
 
     const hours = Math.floor(seconds / 3600);
-
-    const minutes = Math.floor(
-        (seconds % 3600) / 60
-    );
-
+    const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = seconds % 60;
 
-    return [
-        hours,
-        minutes,
-        remainingSeconds
-    ]
-        .map(
-            value => String(value).padStart(2, "0")
-        )
+    return [hours, minutes, remainingSeconds]
+        .map(value => String(value).padStart(2, "0"))
         .join(":");
 }
-
 
 function formatDate(value) {
     if (!value) {
         return "-";
     }
 
-    return new Date(
-        `${value}T00:00:00`
-    ).toLocaleDateString();
+    return new Date(`${value}T00:00:00`).toLocaleDateString();
 }
 
-
 function renderUptimeDowntimeChart(data) {
-    const canvas = document.getElementById(
-        "uptime-downtime-chart"
-    );
+    const canvas = document.getElementById("uptime-downtime-chart");
 
-    if (
-        !canvas
-        || typeof Chart === "undefined"
-    ) {
+    if (!canvas || typeof Chart === "undefined") {
         return;
     }
 
@@ -55,70 +35,41 @@ function renderUptimeDowntimeChart(data) {
         uptimeDowntimeChart.destroy();
     }
 
-    uptimeDowntimeChart = new Chart(
-        canvas,
-        {
-            type: "doughnut",
-
-            data: {
-                labels: [
-                    "Uptime",
-                    "Downtime"
-                ],
-
-                datasets: [
-                    {
-                        data: [
-                            Number(
-                                data.total_uptime_seconds
-                            ) || 0,
-
-                            Number(
-                                data.total_downtime_seconds
-                            ) || 0
-                        ],
-
-                        backgroundColor: [
-                            "#22c55e",
-                            "#ef4444"
-                        ],
-
-                        borderWidth: 0
-                    }
-                ]
-            },
-
-            options: {
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                cutout: "70%",
-
-                plugins: {
-                    legend: {
-                        position: "bottom",
-
-                        labels: {
-                            color: "#cbd5e1"
-                        }
+    uptimeDowntimeChart = new Chart(canvas, {
+        type: "doughnut",
+        data: {
+            labels: ["Uptime", "Downtime"],
+            datasets: [
+                {
+                    data: [
+                        Number(data.total_uptime_seconds) || 0,
+                        Number(data.total_downtime_seconds) || 0
+                    ],
+                    backgroundColor: ["#22c55e", "#ef4444"],
+                    borderWidth: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "70%",
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        color: "#cbd5e1"
                     }
                 }
             }
         }
-    );
+    });
 }
 
-
 function renderEfficiencyTrendChart(rows) {
-    const canvas = document.getElementById(
-        "efficiency-trend-chart"
-    );
+    const canvas = document.getElementById("efficiency-trend-chart");
 
-    if (
-        !canvas
-        || typeof Chart === "undefined"
-    ) {
+    if (!canvas || typeof Chart === "undefined") {
         return;
     }
 
@@ -126,100 +77,64 @@ function renderEfficiencyTrendChart(rows) {
         efficiencyTrendChart.destroy();
     }
 
-    efficiencyTrendChart = new Chart(
-        canvas,
-        {
-            type: "line",
-
-            data: {
-                labels: rows.map(
-                    row => formatDate(row.date)
-                ),
-
-                datasets: [
-                    {
-                        label: "Efficiency %",
-
-                        data: rows.map(
-                            row => Number(
-                                row.efficiency_pct
-                            ) || 0
-                        ),
-
-                        borderColor: "#2563eb",
-
-                        backgroundColor:
-                            "rgba(37, 99, 235, 0.15)",
-
-                        fill: true,
-
-                        tension: 0.3,
-
-                        pointRadius: 4,
-
-                        pointHoverRadius: 6
-                    }
-                ]
-            },
-
-            options: {
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                scales: {
-                    y: {
-                        beginAtZero: true,
-
-                        max: 100,
-
-                        title: {
-                            display: true,
-
-                            text: "Efficiency %",
-
-                            color: "#94a3b8"
-                        },
-
-                        ticks: {
-                            color: "#94a3b8"
-                        },
-
-                        grid: {
-                            color:
-                                "rgba(148, 163, 184, 0.12)"
-                        }
+    efficiencyTrendChart = new Chart(canvas, {
+        type: "line",
+        data: {
+            labels: rows.map(row => formatDate(row.date)),
+            datasets: [
+                {
+                    label: "Efficiency %",
+                    data: rows.map(row => Number(row.efficiency_pct) || 0),
+                    borderColor: "#2563eb",
+                    backgroundColor: "rgba(37, 99, 235, 0.15)",
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: "Efficiency %",
+                        color: "#94a3b8"
                     },
-
-                    x: {
-                        ticks: {
-                            color: "#94a3b8"
-                        },
-
-                        grid: {
-                            display: false
-                        }
+                    ticks: {
+                        color: "#94a3b8"
+                    },
+                    grid: {
+                        color: "rgba(148, 163, 184, 0.12)"
                     }
                 },
-
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: "#cbd5e1"
-                        }
+                x: {
+                    ticks: {
+                        color: "#94a3b8"
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#cbd5e1"
                     }
                 }
             }
         }
-    );
+    });
 }
 
-
 function renderDailyTable(rows) {
-    const body = document.getElementById(
-        "daily-history-body"
-    );
-
+    const body = document.getElementById("daily-history-body");
     body.innerHTML = "";
 
     if (!rows.length) {
@@ -232,51 +147,25 @@ function renderDailyTable(rows) {
                 </td>
             </tr>
         `;
-
         return;
     }
 
     rows.forEach(row => {
-        const tableRow = document.createElement(
-            "tr"
-        );
+        const tableRow = document.createElement("tr");
 
         tableRow.innerHTML = `
-            <td>
-                ${formatDate(row.date)}
-            </td>
-
-            <td>
-                ${formatDuration(
-                    row.uptime_seconds
-                )}
-            </td>
-
-            <td>
-                ${formatDuration(
-                    row.downtime_seconds
-                )}
-            </td>
-
-            <td>
-                <strong>
-                    ${Number(
-                        row.efficiency_pct
-                    ).toFixed(2)}%
-                </strong>
-            </td>
+            <td>${formatDate(row.date)}</td>
+            <td>${formatDuration(row.uptime_seconds)}</td>
+            <td>${formatDuration(row.downtime_seconds)}</td>
+            <td><strong>${Number(row.efficiency_pct).toFixed(2)}%</strong></td>
         `;
 
         body.appendChild(tableRow);
     });
 }
 
-
 function renderShiftTable(rows) {
-    const body = document.getElementById(
-        "shift-history-body"
-    );
-
+    const body = document.getElementById("shift-history-body");
     body.innerHTML = "";
 
     if (!rows.length) {
@@ -289,52 +178,21 @@ function renderShiftTable(rows) {
                 </td>
             </tr>
         `;
-
         return;
     }
 
     rows.forEach(row => {
-        const tableRow = document.createElement(
-            "tr"
-        );
+        const tableRow = document.createElement("tr");
 
-        const statusText = row.is_final
-            ? "Final"
-            : "In Progress";
-
-        const statusClass = row.is_final
-            ? "badge-final"
-            : "badge-progress";
+        const statusText = row.is_final ? "Final" : "In Progress";
+        const statusClass = row.is_final ? "badge-final" : "badge-progress";
 
         tableRow.innerHTML = `
-            <td>
-                ${formatDate(row.date)}
-            </td>
-
-            <td>
-                <strong>
-                    Shift ${row.shift}
-                </strong>
-            </td>
-
-            <td>
-                ${formatDuration(
-                    row.uptime_seconds
-                )}
-            </td>
-
-            <td>
-                ${formatDuration(
-                    row.downtime_seconds
-                )}
-            </td>
-
-            <td>
-                ${Number(
-                    row.efficiency_pct
-                ).toFixed(2)}%
-            </td>
-
+            <td>${formatDate(row.date)}</td>
+            <td><strong>Shift ${row.shift}</strong></td>
+            <td>${formatDuration(row.uptime_seconds)}</td>
+            <td>${formatDuration(row.downtime_seconds)}</td>
+            <td>${Number(row.efficiency_pct).toFixed(2)}%</td>
             <td>
                 <span class="badge ${statusClass}">
                     ${statusText}
@@ -346,15 +204,10 @@ function renderShiftTable(rows) {
     });
 }
 
-
 function showHistoryError(message) {
-    document.getElementById(
-        "history-range"
-    ).textContent = message;
+    document.getElementById("history-range").textContent = message;
 
-    document.getElementById(
-        "daily-history-body"
-    ).innerHTML = `
+    document.getElementById("daily-history-body").innerHTML = `
         <tr>
             <td colspan="4">
                 <div class="empty-state">
@@ -364,9 +217,7 @@ function showHistoryError(message) {
         </tr>
     `;
 
-    document.getElementById(
-        "shift-history-body"
-    ).innerHTML = `
+    document.getElementById("shift-history-body").innerHTML = `
         <tr>
             <td colspan="6">
                 <div class="empty-state">
@@ -377,126 +228,79 @@ function showHistoryError(message) {
     `;
 }
 
+function showUnassignedMachine() {
+    document.getElementById("machine-name").textContent = "No machine assigned";
+    document.getElementById("history-range").textContent = "Assign a machine from the Setup page";
+    document.getElementById("overall-efficiency").textContent = "0.00%";
+    document.getElementById("total-uptime").textContent = "00:00:00";
+    document.getElementById("total-downtime").textContent = "00:00:00";
+
+    renderDailyTable([]);
+    renderShiftTable([]);
+
+    if (uptimeDowntimeChart) {
+        uptimeDowntimeChart.destroy();
+        uptimeDowntimeChart = null;
+    }
+
+    if (efficiencyTrendChart) {
+        efficiencyTrendChart.destroy();
+        efficiencyTrendChart = null;
+    }
+}
 
 async function loadHistory() {
     try {
-        const response = await fetch(
-            "/api/history/7-days",
-            {
-                cache: "no-store"
-            }
-        );
+        const response = await fetch("/api/history/7-days", {
+            cache: "no-store"
+        });
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(
-                data.detail
-                || "Unable to load history"
-            );
+            throw new Error(data.detail || "Unable to load history");
         }
 
-        document.getElementById(
-            "machine-name"
-        ).textContent = (
-            data.machine || "Unknown Machine"
-        );
+        if (isUnassignedMachine(data)) {
+            showUnassignedMachine();
+            return;
+        }
 
-        document.getElementById(
-            "history-range"
-        ).textContent = (
-            `${formatDate(data.from_date)} to `
-            + `${formatDate(data.to_date)}`
-        );
+        document.getElementById("machine-name").textContent = data.machine || "Unknown Machine";
+        document.getElementById("history-range").textContent = `${formatDate(data.from_date)} to ${formatDate(data.to_date)}`;
+        document.getElementById("overall-efficiency").textContent = `${Number(data.weighted_efficiency_pct).toFixed(2)}%`;
+        document.getElementById("total-uptime").textContent = formatDuration(data.total_uptime_seconds);
+        document.getElementById("total-downtime").textContent = formatDuration(data.total_downtime_seconds);
 
-        document.getElementById(
-            "overall-efficiency"
-        ).textContent = (
-            `${Number(
-                data.weighted_efficiency_pct
-            ).toFixed(2)}%`
-        );
-
-        document.getElementById(
-            "total-uptime"
-        ).textContent = formatDuration(
-            data.total_uptime_seconds
-        );
-
-        document.getElementById(
-            "total-downtime"
-        ).textContent = formatDuration(
-            data.total_downtime_seconds
-        );
-
-        const dailyRows = Array.isArray(
-            data.daily
-        )
-            ? data.daily
-            : [];
-
-        const shiftRows = Array.isArray(
-            data.shifts
-        )
-            ? data.shifts
-            : [];
+        const dailyRows = Array.isArray(data.daily) ? data.daily : [];
+        const shiftRows = Array.isArray(data.shifts) ? data.shifts : [];
 
         renderUptimeDowntimeChart(data);
-
-        renderEfficiencyTrendChart(
-            dailyRows
-        );
-
-        renderDailyTable(
-            dailyRows
-        );
-
-        renderShiftTable(
-            shiftRows
-        );
+        renderEfficiencyTrendChart(dailyRows);
+        renderDailyTable(dailyRows);
+        renderShiftTable(shiftRows);
 
     } catch (error) {
-        console.error(
-            "History loading failed:",
-            error
-        );
-
-        showHistoryError(
-            error.message
-            || "Unable to load history"
-        );
+        console.error("History loading failed:", error);
+        showHistoryError(error.message || "Unable to load history");
     }
 }
 
 function updateSystemClock() {
     const now = new Date();
 
-    document.getElementById(
-        "system-time"
-    ).textContent = now.toLocaleTimeString(
-        "en-IN",
-        {
-            hour12: false
-        }
-    );
+    document.getElementById("system-time").textContent = now.toLocaleTimeString("en-IN", {
+        hour12: false
+    });
 
-    document.getElementById(
-        "system-date"
-    ).textContent = now.toLocaleDateString(
-        "en-IN",
-        {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }
-    );
+    document.getElementById("system-date").textContent = now.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
 }
 
 updateSystemClock();
-
-setInterval(
-    updateSystemClock,
-    1000
-);
+setInterval(updateSystemClock, 1000);
 
 loadHistory();

@@ -46,3 +46,4 @@ alembic/versions/__pycache__/
 *.tmp
 *.swp
 *~
+reports/

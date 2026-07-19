@@ -1,369 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Machine Configuration</title>
-
-<link rel="stylesheet" href="/static/css/setup.css">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/setup.css">
 </head>
-
 <body>
 
 <header class="system-header">
+<div class="system-title">
 
-    <div class="system-title">
+    <h1 class="siemens-logo">SIEMENS</h1>
 
-        <h1>Machine Monitoring</h1>
+    <p class="system-subtitle">
+        Plant Runtime Acquisition System
+    </p>
 
-        <p>
-            Plant Runtime Acquisition System
-        </p>
-
-    </div>
-
+</div>
     <div class="system-clock">
-
-        <strong id="system-time">
-            --:--:--
-        </strong>
-
-        <span id="system-date">
-            --
-        </span>
-
+        <strong id="system-time">--:--:--</strong>
+        <span id="system-date">--</span>
     </div>
-
 </header>
 
 <nav class="system-nav">
-
     <a href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 13l3-4"></path><path d="M9 3h6"></path></svg>
         Dashboard
     </a>
-
     <a href="/history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 16l4-6 3 3 5-8"></path></svg>
         7-Day History
     </a>
-
     <a href="/custom-history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="11" cy="18" r="1.6"></circle></svg>
         Custom History
     </a>
-
     <a href="/setup" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"></path></svg>
         Machine Configuration
     </a>
-
 </nav>
 
 <main class="system-page">
-
     <div class="page-heading">
-
         <h2>Monitor Configuration</h2>
-
-        <p>
-            Assign the monitoring unit to a machine
-            and configure production schedules
-        </p>
-
+        <p>Assign the monitoring unit to a machine and configure production schedules</p>
     </div>
 
+    <!-- 1. Machine Assignment Section -->
     <section class="engineering-section">
-
         <div class="section-title">
-
-            <h3>
-                Machine Assignment
-            </h3>
-
-            <span>
-                Raspberry Pi monitoring target
-            </span>
-
+            <h3>Machine Assignment</h3>
+            <span>Select which machine this Raspberry Pi monitors</span>
         </div>
+        <div class="configuration-block">
+            <div class="form-field">
+                <label for="assignment-machine">Assigned Machine</label>
+                <select id="assignment-machine">
+                    <option>Loading...</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="button" id="assign-button" class="primary-button">
+                    Assign Machine
+                </button>
+            </div>
+        </div>
+    </section>
 
+    <!-- 2. Machine Configuration Section -->
+    <section class="engineering-section">
+        <div class="section-title">
+            <h3>Machine Configuration</h3>
+            <span>Register or edit machine settings</span>
+        </div>
+        
         <div class="configuration-block">
 
-            <div class="mode-selector">
-
-                <button
-                    type="button"
-                    id="existing-mode-button"
-                    class="mode-button active"
-                >
-                    Existing Machine
-                </button>
-
-                <button
-                    type="button"
-                    id="new-mode-button"
-                    class="mode-button"
-                >
-                    Register New Machine
-                </button>
-
-            </div>
-
-            <div
-                class="form-field"
-                id="existing-machine-group"
-            >
-
-                <label for="machine-select">
-                    Registered Machine
-                </label>
-
-                <select id="machine-select">
-
-                    <option value="">
-                        Loading machine registry...
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div
-                class="form-field"
-                id="new-machine-group"
-                hidden
-            >
-
-                <label for="machine-name">
-                    Machine Name
-                </label>
-
-                <input
-                    type="text"
-                    id="machine-name"
-                    placeholder="Enter machine identifier"
-                >
-
-            </div>
-
+        <div class="mode-selector">
+            <button type="button" id="existing-mode-button" class="mode-button active">
+                Existing Machine
+            </button>
+            <button type="button" id="new-mode-button" class="mode-button">
+                Register New Machine
+            </button>
         </div>
 
+        <div class="form-field" id="existing-machine-group">
+            <label>Machine</label>
+            <select id="machine-select"></select>
+            <div class="form-actions">
+                <button type="button" id="edit-button" class="secondary-button">
+                    Edit Configuration
+                </button>
+                <button type="button" id="cancel-button" class="secondary-button" hidden>
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <div class="form-field" id="new-machine-group" hidden>
+            <label>Machine Name</label>
+            <input id="machine-name" type="text" placeholder="Enter machine identifier">
+        </div>
+
+        </div>
     </section>
 
+    <!-- 3. Production Shift Schedule -->
     <section class="engineering-section">
-
         <div class="section-title">
-
             <h3>Production Shift Schedule</h3>
-
-            <span>
-                Machine-specific shift configuration
-            </span>
-
+            <span>Machine-specific shift configuration</span>
         </div>
-
         <div class="shift-configuration">
-
             <div class="shift-config-cell">
-
                 <h4>Shift A</h4>
-
                 <div class="form-field">
-
-                    <label for="shift-a-start">
-                        Start Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="shift-a-start"
-                        required
-                    >
-
+                    <label for="shift-a-start">Start Time</label>
+                    <input type="time" id="shift-a-start" required>
                 </div>
-
                 <div class="form-field">
-
-                    <label for="shift-a-end">
-                        End Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="shift-a-end"
-                        required
-                    >
-
+                    <label for="shift-a-end">End Time</label>
+                    <input type="time" id="shift-a-end" required>
                 </div>
-
             </div>
-
             <div class="shift-config-cell">
-
                 <h4>Shift B</h4>
-
                 <div class="form-field">
-
-                    <label for="shift-b-start">
-                        Start Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="shift-b-start"
-                        required
-                    >
-
+                    <label for="shift-b-start">Start Time</label>
+                    <input type="time" id="shift-b-start" required>
                 </div>
-
                 <div class="form-field">
-
-                    <label for="shift-b-end">
-                        End Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="shift-b-end"
-                        required
-                    >
-
+                    <label for="shift-b-end">End Time</label>
+                    <input type="time" id="shift-b-end" required>
                 </div>
-
             </div>
-
             <div class="shift-config-cell">
-
                 <h4>Shift C</h4>
-
                 <div class="form-field">
-
-                    <label for="shift-c-start">
-                        Start Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="shift-c-start"
-                        required
-                    >
-
+                    <label for="shift-c-start">Start Time</label>
+                    <input type="time" id="shift-c-start" required>
                 </div>
-
                 <div class="form-field">
-
-                    <label for="shift-c-end">
-                        End Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="shift-c-end"
-                        required
-                    >
-
+                    <label for="shift-c-end">End Time</label>
+                    <input type="time" id="shift-c-end" required>
                 </div>
-
             </div>
-
         </div>
-
     </section>
 
+    <!-- 4. Scheduled Break Times -->
     <section class="engineering-section">
-
         <div class="section-title">
-
             <h3>Scheduled Break Times</h3>
-
-            <span>
-                Each configured break has a fixed duration of one hour
-            </span>
-
+            <span>Each configured break has a fixed duration of one hour</span>
         </div>
-
         <div class="shift-configuration">
-
             <div class="shift-config-cell">
-
                 <h4>Breakfast</h4>
-
                 <div class="form-field">
-
-                    <label for="breakfast-start">
-                        Start Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="breakfast-start"
-                    >
-
+                    <label for="breakfast-start">Start Time</label>
+                    <input type="time" id="breakfast-start">
                 </div>
-
             </div>
-
             <div class="shift-config-cell">
-
                 <h4>Lunch</h4>
-
                 <div class="form-field">
-
-                    <label for="lunch-start">
-                        Start Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="lunch-start"
-                    >
-
+                    <label for="lunch-start">Start Time</label>
+                    <input type="time" id="lunch-start">
                 </div>
-
             </div>
-
             <div class="shift-config-cell">
-
                 <h4>Dinner</h4>
-
                 <div class="form-field">
-
-                    <label for="dinner-start">
-                        Start Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="dinner-start"
-                    >
-
+                    <label for="dinner-start">Start Time</label>
+                    <input type="time" id="dinner-start">
                 </div>
-
             </div>
-
         </div>
-
     </section>
 
-    <div
-        id="form-message"
-        class="form-message"
-    ></div>
+    <div id="form-message" class="form-message"></div>
 
-    <div class="form-actions">
-
-        <button
-            type="button"
-            class="primary-button"
-            id="save-button"
-        >
-            Apply Configuration
+    <div class="form-actions" id="save-container" hidden>
+        <button type="button" class="primary-button" id="save-button">
+            Save Configuration
         </button>
-
     </div>
 
 </main>
@@ -375,5 +202,4 @@
 <script src="/static/js/setup.js"></script>
 
 </body>
-
 </html>

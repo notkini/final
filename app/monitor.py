@@ -86,53 +86,30 @@ def _get_active_assignment(
     ).first()
 
 
-def _initialize_machine_assignment() -> int:
+def _initialize_machine_assignment() -> int | None:
     """
     Load the current machine assignment.
 
-    During the initial migration phase, if no assignment exists, assign
-    the monitor to the first active machine automatically.
+    If no assignment exists, monitoring starts in an
+    unassigned state and waits until a machine is assigned
+    from the Setup page.
     """
 
     with get_session() as session:
+
         assignment = _get_active_assignment(session)
 
-        if assignment is not None:
-            machine_id = assignment.machine_id
+        if assignment is None:
 
-        else:
-            machine = session.scalars(
-                select(Machine)
-                .where(
-                    Machine.is_active.is_(True)
-                )
-                .order_by(Machine.id.asc())
-                .limit(1)
-            ).first()
-
-            if machine is None:
-                raise RuntimeError(
-                    "No active machine exists. "
-                    "Create a machine before starting the monitor."
-                )
-
-            assignment = MonitorAssignment(
-                machine_id=machine.id,
-                assigned_at=datetime.now(
-                    timezone.utc
-                ),
-                unassigned_at=None,
+            logger.warning(
+                "No machine assigned. Monitoring is paused."
             )
 
-            session.add(assignment)
+            _set_cached_machine_id(None)
 
-            machine_id = machine.id
+            return None
 
-            logger.info(
-                "No active assignment found. "
-                "Automatically assigned monitor to machine_id=%s",
-                machine_id,
-            )
+        machine_id = assignment.machine_id
 
     _set_cached_machine_id(machine_id)
 
@@ -237,7 +214,13 @@ def handle_state_change(
             "event_time must be timezone-aware"
         )
 
-    machine_id = _require_machine_id()
+    try:
+        machine_id = _require_machine_id()
+    except RuntimeError:
+        logger.warning(
+            "Ignoring GPIO event because no machine is assigned."
+        )
+        return
 
     event_key = str(uuid.uuid4())
 
@@ -391,7 +374,10 @@ def recalculate_current_shift():
         )
         return
 
-    machine_id = _require_machine_id()
+    try:
+        machine_id = _require_machine_id()
+    except RuntimeError:
+        return
 
     now = datetime.now(timezone.utc)
 
@@ -667,7 +653,15 @@ def main():
 
     machine_id = _initialize_machine_assignment()
 
-    logger.info(
+    if machine_id is None:
+
+        logger.warning(
+        "No machine assigned. Waiting for assignment..."
+    )
+
+    else:
+
+        logger.info(
         "Monitor assigned to machine_id=%s",
         machine_id,
     )

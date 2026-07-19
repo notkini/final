@@ -4,12 +4,12 @@ Creates and updates shift_performance rows for every monitored machine.
 Performance is calculated only during periods where the Raspberry Pi was
 assigned to the machine. Unmonitored time is not counted as downtime.
 """
-
 import logging
 from datetime import datetime, time, timezone
 
 from sqlalchemy import select
 
+from app.services.excel_report_service import update_shift_report
 from app.database import get_session, is_postgres_reachable
 from app.models import (
     Machine,
@@ -218,6 +218,20 @@ def _save_shift_performance(
     row.down_seconds = result.down_seconds
     row.efficiency_pct = result.efficiency_pct
     row.is_final = result.is_final
+    
+    machine = session.get(
+        Machine,
+        machine_id,
+    )
+
+    update_shift_report(
+        machine_name=machine.machine_name,
+        shift_date=window.shift_date,
+        shift_name=window.shift_name,
+        up_seconds=result.up_seconds,
+        down_seconds=result.down_seconds,
+        efficiency=result.efficiency_pct,
+    )
 
 
 def _backfill_machine(

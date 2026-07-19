@@ -11,6 +11,9 @@
 
     <title>Custom History</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
     <link
         rel="stylesheet"
         href="/static/css/custom_history.css?v=3"
@@ -21,10 +24,15 @@
 
 <header class="system-header">
 
-    <div class="system-title">
-        <h1>Machine Monitoring</h1>
-        <p>Plant Runtime Acquisition System</p>
-    </div>
+<div class="system-title">
+
+    <h1 class="siemens-logo">SIEMENS</h1>
+
+    <p class="system-subtitle">
+        Plant Runtime Acquisition System
+    </p>
+
+</div>
 
     <div class="system-clock">
         <strong id="system-time">--:--:--</strong>
@@ -35,17 +43,23 @@
 
 <nav class="system-nav">
 
-    <a href="/">Dashboard</a>
+    <a href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 13l3-4"></path><path d="M9 3h6"></path></svg>
+        Dashboard
+    </a>
 
     <a href="/history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 16l4-6 3 3 5-8"></path></svg>
         7-Day History
     </a>
 
     <a href="/custom-history" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="11" cy="18" r="1.6"></circle></svg>
         Custom History
     </a>
 
     <a href="/setup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"></path></svg>
         Machine Configuration
     </a>
 
@@ -123,10 +137,7 @@
 
             </div>
 
-            <div
-                class="checkbox-row"
-                style="margin-top: 14px;"
-            >
+            <div class="checkbox-row">
 
                 <span class="field-label">
                     Production Shifts
@@ -348,6 +359,7 @@
 </footer>
 
 <script src="/static/vendor/chart.umd.min.js"></script>
+<script src="/static/js/common.js"></script>
 <script src="/static/js/custom_history.js"></script>
 
 </body>
