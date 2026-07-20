@@ -70,15 +70,6 @@ button, input, select { font: inherit; }
     gap: 10px;
 }
 
-.siemens-logo::before {
-    content: "";
-    width: 20px;
-    height: 20px;
-    background: var(--siemens);
-    clip-path: polygon(0 0, 100% 0, 100% 34%, 34% 34%, 34% 66%, 100% 66%, 100% 100%, 0 100%);
-    filter: drop-shadow(0 0 6px rgba(0, 194, 194, .8));
-    flex-shrink: 0;
-}
 
 .system-title p, .system-subtitle {
     margin: 3px 0 0;

@@ -215,6 +215,42 @@ function pctOf(timeMs, rangeStart, totalRange) {
     return ((timeMs - rangeStart) / totalRange) * 100;
 }
 
+/**
+ * Splits [start, end] around any overlapping gaps, returning only
+ * the sub-intervals that fall outside every gap. Used so a state
+ * segment never gets drawn across a period the machine had no
+ * monitor attached — that period should render blank, not carry
+ * the last known color forward.
+ */
+function subtractGaps(start, end, gaps) {
+    let pieces = [[start, end]];
+
+    gaps.forEach(gap => {
+        const gapStart = new Date(gap.start).getTime();
+        const gapEnd = new Date(gap.end).getTime();
+
+        pieces = pieces.flatMap(([pieceStart, pieceEnd]) => {
+            if (gapEnd <= pieceStart || gapStart >= pieceEnd) {
+                return [[pieceStart, pieceEnd]];
+            }
+
+            const remaining = [];
+
+            if (gapStart > pieceStart) {
+                remaining.push([pieceStart, gapStart]);
+            }
+
+            if (gapEnd < pieceEnd) {
+                remaining.push([gapEnd, pieceEnd]);
+            }
+
+            return remaining;
+        });
+    });
+
+    return pieces;
+}
+
 function renderHourScale(scale, grid, rangeStart, rangeEnd, totalRange) {
     const tick = new Date(rangeStart);
     tick.setMinutes(0, 0, 0);
@@ -245,7 +281,7 @@ function renderHourScale(scale, grid, rangeStart, rangeEnd, totalRange) {
     }
 }
 
-function renderStateSegments(timeline, events, rangeStart, rangeEnd, totalRange) {
+function renderStateSegments(timeline, events, rangeStart, rangeEnd, totalRange, gaps) {
     events.forEach((event, index) => {
         const start = new Date(event.event_time).getTime();
 
@@ -260,16 +296,22 @@ function renderStateSegments(timeline, events, rangeStart, rangeEnd, totalRange)
             return;
         }
 
-        const left = pctOf(segmentStart, rangeStart, totalRange);
-        const width = pctOf(segmentEnd, rangeStart, totalRange) - left;
+        subtractGaps(segmentStart, segmentEnd, gaps).forEach(([pieceStart, pieceEnd]) => {
+            if (pieceEnd <= pieceStart) {
+                return;
+            }
 
-        const segment = document.createElement("div");
-        segment.className = `timeline-segment ${event.state === "UP" ? "up" : "down"}`;
-        segment.style.left = `${left}%`;
-        segment.style.width = `${width}%`;
-        segment.title = `${event.state}\n${formatDateTime(event.event_time)}`;
+            const left = pctOf(pieceStart, rangeStart, totalRange);
+            const width = pctOf(pieceEnd, rangeStart, totalRange) - left;
 
-        timeline.appendChild(segment);
+            const segment = document.createElement("div");
+            segment.className = `timeline-segment ${event.state === "UP" ? "up" : "down"}`;
+            segment.style.left = `${left}%`;
+            segment.style.width = `${width}%`;
+            segment.title = `${event.state}\n${formatDateTime(event.event_time)}`;
+
+            timeline.appendChild(segment);
+        });
     });
 }
 
@@ -312,7 +354,7 @@ function renderTimeline(data, rebuildAxis) {
     // tick: the segment for the currently active state keeps
     // growing towards "now".
     timeline.innerHTML = "";
-    renderStateSegments(timeline, events, rangeStart, rangeEnd, totalRange);
+    renderStateSegments(timeline, events, rangeStart, rangeEnd, totalRange, data.gaps || []);
 }
 
 /**
