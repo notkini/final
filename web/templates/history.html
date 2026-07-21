@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>7-Day History</title>
+    <title>History</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -38,11 +38,7 @@
     </a>
     <a href="/history" class="active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 16l4-6 3 3 5-8"></path></svg>
-        7-Day History
-    </a>
-    <a href="/custom-history">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="11" cy="18" r="1.6"></circle></svg>
-        Custom History
+        History
     </a>
     <a href="/setup">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"></path></svg>
@@ -53,9 +49,73 @@
 <main class="system-page">
 
     <div class="page-heading">
-        <h2 id="machine-name">Loading machine...</h2>
-        <p id="history-range">Loading historical records...</p>
+        <h2>History</h2>
+        <p>View historical machine performance</p>
     </div>
+
+    <!-- Tab Navigation -->
+    <div class="history-toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div class="mode-selector">
+            <button type="button" class="mode-button active" id="tab-7-days">7 Days</button>
+            <button type="button" class="mode-button" id="tab-month">Month</button>
+            <button type="button" class="mode-button" id="tab-year">Year</button>
+            <button type="button" class="mode-button" id="tab-custom">Custom</button>
+        </div>
+        
+        <button type="button" class="secondary-button" id="download-report">
+            Download Report
+        </button>
+    </div>
+
+    <!-- Custom Filters Section -->
+    <section id="custom-filters" class="engineering-section" style="display:none; margin-bottom:24px;">
+
+        <div class="section-title">
+            <h3>Custom Filters</h3>
+            <span>Select machine, date range and shifts</span>
+        </div>
+
+        <div class="filter-grid">
+
+            <div class="filter-item">
+                <label>Machine</label>
+                <select id="machine-select">
+                    <option value="">Loading...</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label>From Date</label>
+                <input type="date" id="from-date">
+            </div>
+
+            <div class="filter-item">
+                <label>To Date</label>
+                <input type="date" id="to-date">
+            </div>
+
+            <div class="filter-item">
+                <label>Shifts</label>
+
+                <div class="shift-selector">
+                    <label><input type="checkbox" value="A" checked> A</label>
+                    <label><input type="checkbox" value="B" checked> B</label>
+                    <label><input type="checkbox" value="C" checked> C</label>
+                </div>
+            </div>
+
+            <div class="filter-item">
+                <button
+                    class="secondary-button"
+                    id="apply-custom-filter"
+                >
+                    Apply Filter
+                </button>
+            </div>
+
+        </div>
+
+    </section>
 
     <section class="summary-row">
 
@@ -91,7 +151,7 @@
 
             <div class="section-title">
                 <h3>Uptime / Downtime</h3>
-                <span>7-day monitored duration</span>
+                <span>Monitored duration</span>
             </div>
 
             <div class="chart-container">

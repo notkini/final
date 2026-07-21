@@ -1,5 +1,6 @@
 let uptimeDowntimeChart = null;
 let efficiencyTrendChart = null;
+let currentRange = "7d"; 
 
 function formatDuration(seconds) {
     seconds = Math.max(
@@ -249,9 +250,80 @@ function showUnassignedMachine() {
     }
 }
 
+function selectHistoryRange(range) {
+    currentRange = range;
+
+    document
+        .querySelectorAll(".mode-button")
+        .forEach(button => button.classList.remove("active"));
+
+    if (range === "7d") {
+        document.getElementById("tab-7-days").classList.add("active");
+    } else {
+        document.getElementById(`tab-${range}`).classList.add("active");
+    }
+
+    const filters = document.getElementById("custom-filters");
+
+    if (range === "custom") {
+        filters.style.display = "block";
+        return; // Wait for Apply Filter button to trigger loadHistory()
+    } else {
+        filters.style.display = "none";
+    }
+
+    console.log("Selected:", range);
+    loadHistory(); 
+}
+
+async function loadMachines() {
+    try {
+        const response = await fetch("/api/machines", {
+            cache: "no-store"
+        });
+        const data = await response.json();
+        const select = document.getElementById("machine-select");
+        
+        select.innerHTML = "";
+        
+        data.machines.forEach(machine => {
+            const option = document.createElement("option");
+            
+            option.value = machine.id;
+            option.textContent = machine.name;
+            
+            if (machine.id === data.current_machine_id) {
+                option.selected = true;
+            }
+            
+            select.appendChild(option);
+        });
+        
+    } catch (error) {
+        console.error("Unable to load machines:", error);
+    }
+}
+
 async function loadHistory() {
     try {
-        const response = await fetch("/api/history/7-days", {
+        let url = `/api/history?range=${currentRange}`;
+
+        if (currentRange === "custom") {
+            const machineId = document.getElementById("machine-select").value;
+            const fromDate = document.getElementById("from-date").value;
+            const toDate = document.getElementById("to-date").value;
+            const shifts = [...document.querySelectorAll('.shift-selector input[type="checkbox"]:checked')]
+                .map(cb => cb.value)
+                .join(",");
+
+            if (!machineId || !fromDate || !toDate) {
+                return; // Stop execution if validation fails
+            }
+
+            url += `&machine_id=${machineId}&from_date=${fromDate}&to_date=${toDate}&shifts=${shifts}`;
+        }
+
+        const response = await fetch(url, {
             cache: "no-store"
         });
 
@@ -261,7 +333,7 @@ async function loadHistory() {
             throw new Error(data.detail || "Unable to load history");
         }
 
-        if (isUnassignedMachine(data)) {
+        if (typeof isUnassignedMachine === "function" && isUnassignedMachine(data)) {
             showUnassignedMachine();
             return;
         }
@@ -300,7 +372,28 @@ function updateSystemClock() {
     });
 }
 
+document
+    .getElementById("tab-7-days")
+    .addEventListener("click", () => selectHistoryRange("7d"));
+
+document
+    .getElementById("tab-month")
+    .addEventListener("click", () => selectHistoryRange("month"));
+
+document
+    .getElementById("tab-year")
+    .addEventListener("click", () => selectHistoryRange("year"));
+
+document
+    .getElementById("tab-custom")
+    .addEventListener("click", () => selectHistoryRange("custom"));
+
+document
+    .getElementById("apply-custom-filter")
+    .addEventListener("click", loadHistory);
+
+// Initial load
 updateSystemClock();
 setInterval(updateSystemClock, 1000);
-
+loadMachines();
 loadHistory();
