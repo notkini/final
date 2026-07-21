@@ -651,6 +651,23 @@ def main():
             "to resolve the machine assignment"
         )
 
+    # A Raspberry Pi can be physically moved to a different machine
+    # while it was powered off. Never let it silently resume
+    # monitoring whatever machine was assigned before the last
+    # reboot -- close that assignment out here and require an
+    # explicit re-assignment from the Setup page before monitoring
+    # starts again.
+    with get_session() as session:
+        assignment = _get_active_assignment(session)
+
+        if assignment is not None:
+            logger.info(
+                "Clearing previous assignment (machine_id=%s) on startup.",
+                assignment.machine_id,
+            )
+
+            assignment.unassigned_at = datetime.now(timezone.utc)
+
     machine_id = _initialize_machine_assignment()
 
     if machine_id is None:
