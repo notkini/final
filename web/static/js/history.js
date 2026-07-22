@@ -143,6 +143,21 @@ function renderUptimeDowntimeChart(data) {
                     labels: {
                         color: "#cbd5e1"
                     }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context){
+                            const total =
+                                context.dataset.data.reduce((a,b)=>a+b,0);
+
+                            const value = context.raw;
+
+                            const percent =
+                                ((value/total)*100).toFixed(1);
+
+                            return `${context.label}: ${percent}%`;
+                        }
+                    }
                 }
             }
         }
@@ -405,6 +420,9 @@ async function loadMachines() {
 async function loadHistory() {
     try {
         const url = buildHistoryUrl("/api/history");
+        if (!url) {
+            return;
+        }
 
         const response = await fetch(url, {
             cache: "no-store"
@@ -469,7 +487,7 @@ function buildHistoryUrl(baseUrl) {
         const date = document.getElementById("history-date").value;
 
         if (!date) {
-            alert("Please select a date.");
+            showPopup("Please select a date.");
             return;
         }
 
@@ -490,7 +508,7 @@ function buildHistoryUrl(baseUrl) {
             .join(",");
 
         if (!machineId || !fromDate || !toDate) {
-            return;
+            throw new Error("Please select both From Date and To Date.");
         }
 
         url += `&machine_id=${machineId}&from_date=${fromDate}&to_date=${toDate}&shifts=${shifts}`;
@@ -588,9 +606,7 @@ async function downloadPdfReport() {
 
     if (!response.ok) {
 
-        alert(
-            "Unable to generate PDF."
-        );
+        showPopup("Unable to generate PDF.");
 
         return;
     }
@@ -618,6 +634,15 @@ async function downloadPdfReport() {
     window.URL.revokeObjectURL(url);
 }
 
+function showPopup(message) {
+    document.getElementById("popup-message").textContent = message;
+    document.getElementById("popup-overlay").style.display = "flex";
+}
+
+function hidePopup() {
+    document.getElementById("popup-overlay").style.display = "none";
+}
+
 function updateSystemClock() {
     const now = new Date();
 
@@ -631,6 +656,10 @@ function updateSystemClock() {
         year: "numeric"
     });
 }
+
+document
+    .getElementById("popup-ok")
+    .addEventListener("click", hidePopup);
 
 document
     .getElementById("tab-7-days")
@@ -654,7 +683,22 @@ document
 
 document
     .getElementById("apply-custom-filter")
-    .addEventListener("click", loadHistory);
+    .addEventListener("click", () => {
+        const fromDate = document.getElementById("from-date").value;
+        const toDate = document.getElementById("to-date").value;
+
+        if (!fromDate || !toDate) {
+            showPopup("Please select both From Date and To Date.");
+            return;
+        }
+
+        if (new Date(fromDate) > new Date(toDate)) {
+            showPopup("From Date cannot be later than To Date.");
+            return;
+        }
+
+        loadHistory();
+    });
 
 document
     .getElementById("apply-month-filter")
@@ -684,7 +728,10 @@ document
 document
     .getElementById("download-excel")
     .addEventListener("click", () => {
-        window.location.href = buildHistoryUrl("/api/history/export/excel");
+        const url = buildHistoryUrl("/api/history/export/excel");
+        if (url) {
+            window.location.href = url;
+        }
     });
 
 document
