@@ -49,23 +49,140 @@
 <main class="system-page">
 
     <div class="page-heading">
-        <h2>History</h2>
-        <p>View historical machine performance</p>
+        <h2 id="machine-name">History</h2>
+        <p id="history-range">View historical machine performance</p>
     </div>
 
     <!-- Tab Navigation -->
     <div class="history-toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <div class="mode-selector">
-            <button type="button" class="mode-button active" id="tab-7-days">7 Days</button>
-            <button type="button" class="mode-button" id="tab-month">Month</button>
-            <button type="button" class="mode-button" id="tab-year">Year</button>
-            <button type="button" class="mode-button" id="tab-custom">Custom</button>
+            <button type="button" class="mode-button active" id="tab-7-days">
+                7 Days
+            </button>
+            <button type="button" class="mode-button" id="tab-month">
+                Month
+            </button>
+            <button type="button" class="mode-button" id="tab-date">
+                Date
+            </button>
+            <button type="button" class="mode-button" id="tab-year">
+                Year
+            </button>
+            <button type="button" class="mode-button" id="tab-custom">
+                Custom
+            </button>
         </div>
         
-        <button type="button" class="secondary-button" id="download-report">
-            Download Report
-        </button>
+        <div style="display:flex; gap:10px;">
+            <button type="button" class="secondary-button" id="download-excel">
+                Excel
+            </button>
+            <button type="button" class="secondary-button" id="download-pdf">
+                PDF
+            </button>
+        </div>
     </div>
+
+    <!-- Month Panel -->
+    <section
+        id="month-panel"
+        class="engineering-section"
+        style="display:none; margin-bottom:24px;">
+
+        <div class="section-title">
+            <h3>Monthly Report</h3>
+            <span>Select month and year</span>
+        </div>
+
+        <div class="filter-grid">
+
+            <div class="filter-item">
+                <label>Month</label>
+                <select id="month-select">
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label>Year</label>
+                <select id="month-year-select">
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <button
+                    class="primary-button"
+                    id="apply-month-filter"
+                >
+                    Apply
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Date Panel -->
+    <section
+        id="date-panel"
+        class="engineering-section"
+        style="display:none; margin-bottom:24px;">
+
+        <div class="section-title">
+            <h3>Daily Report</h3>
+            <span>Select a date</span>
+        </div>
+
+        <div class="filter-grid">
+
+            <div class="filter-item">
+                <label>Date</label>
+                <input
+                    type="date"
+                    id="history-date"
+                >
+            </div>
+
+            <div class="filter-item">
+                <button
+                    class="primary-button"
+                    id="apply-date-filter"
+                >
+                    Apply
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Year Panel -->
+    <section
+        id="year-panel"
+        class="engineering-section"
+        style="display:none; margin-bottom:24px;">
+
+        <div class="section-title">
+            <h3>Yearly Report</h3>
+            <span>Select year</span>
+        </div>
+
+        <div class="filter-grid">
+
+            <div class="filter-item">
+                <label>Year</label>
+                <select id="year-select">
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <button
+                    class="primary-button"
+                    id="apply-year-filter"
+                >
+                    Apply
+                </button>
+            </div>
+
+        </div>
+    </section>
 
     <!-- Custom Filters Section -->
     <section id="custom-filters" class="engineering-section" style="display:none; margin-bottom:24px;">
@@ -106,7 +223,7 @@
 
             <div class="filter-item">
                 <button
-                    class="secondary-button"
+                    class="primary-button"
                     id="apply-custom-filter"
                 >
                     Apply Filter

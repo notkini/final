@@ -5,7 +5,7 @@ from werkzeug.exceptions import BadRequest
 
 from app.services.history_service import (
     get_custom_history,
-    get_seven_day_history,
+    get_history,
 )
 
 history_bp = Blueprint("history", __name__)
@@ -19,10 +19,27 @@ def history():
         "7d",
     )
 
-    # Temporary: Month and Year return the same data as 7 Days
-    if range_type in ("7d", "month", "year"):
+    if range_type in ("7d", "month", "year", "date"):
+
+        year = request.args.get(
+            "year",
+            type=int,
+        )
+
+        month = request.args.get(
+            "month",
+            type=int,
+        )
+
+        selected_date = request.args.get("date")
+
         return jsonify(
-            get_seven_day_history()
+            get_history(
+                range_type=range_type,
+                year=year,
+                month=month,
+                date=selected_date,
+            )
         )
 
     elif range_type == "custom":

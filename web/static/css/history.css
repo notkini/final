@@ -510,3 +510,170 @@ button, input, select { font: inherit; }
     .system-page { padding: 18px; }
     .summary-row { grid-template-columns: 1fr; }
 }
+
+.filter-item select,
+.filter-item input[type="date"] {
+
+    width: 220px;
+    height: 42px;
+
+    background: #11171d;
+
+    color: #f1f5f9;
+
+    border: 1px solid rgba(0,255,255,.18);
+
+    border-radius: 4px;
+
+    padding: 0 14px;
+
+    font-size: 14px;
+
+    font-family: "Inter", sans-serif;
+
+    transition: .2s;
+}
+
+.filter-item select:focus,
+.filter-item input[type="date"]:focus{
+
+    outline: none;
+
+    border-color: #00d4d4;
+
+    box-shadow: 0 0 10px rgba(0,212,212,.18);
+}.filter-item label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    color:#9fb4c8;
+
+    font-size:13px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+    font-weight:600;
+}
+.filter-item{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:flex-end;
+}.primary-button{
+
+    min-width:140px;
+
+    height:42px;
+
+    padding:0 28px;
+
+    font-size:13px;
+
+    letter-spacing:.15em;
+}
+.filter-grid{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:24px;
+
+    align-items:flex-end;
+}
+.shift-selector{
+
+    display:flex;
+
+    gap:18px;
+
+    align-items:center;
+
+    margin-top:10px;
+}
+
+.shift-selector label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    margin:0;
+
+    text-transform:none;
+}
+#history-date,
+#from-date,
+#to-date{
+
+    width:220px;
+}
+/* --------------------------
+   History Mode Tabs
+---------------------------*/
+
+.mode-selector{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.mode-button{
+
+    background:#161d24;
+
+    color:#9fb4c8;
+
+    border:1px solid rgba(0,255,255,.15);
+
+    border-radius:4px;
+
+    padding:10px 22px;
+
+    cursor:pointer;
+
+    font-family:"Rajdhani",sans-serif;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    letter-spacing:.06em;
+
+    text-transform:uppercase;
+
+    transition:.25s;
+}
+
+.mode-button:hover{
+
+    color:#ffffff;
+
+    border-color:#00d4d4;
+
+    background:#1d2630;
+}
+
+.mode-button.active{
+
+    color:#071317;
+
+    background:linear-gradient(
+        180deg,
+        #29d7d7,
+        #12bcbc
+    );
+
+    border-color:#29d7d7;
+
+    box-shadow:
+        0 0 14px rgba(0,212,212,.30);
+}

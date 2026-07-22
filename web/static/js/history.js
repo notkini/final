@@ -1,6 +1,8 @@
 let uptimeDowntimeChart = null;
 let efficiencyTrendChart = null;
 let currentRange = "7d"; 
+let selectedMonth = new Date().getMonth() + 1;
+let selectedYear = new Date().getFullYear();
 
 function formatDuration(seconds) {
     seconds = Math.max(
@@ -23,6 +25,86 @@ function formatDate(value) {
     }
 
     return new Date(`${value}T00:00:00`).toLocaleDateString();
+}
+
+function populateMonthDropdown() {
+    const select = document.getElementById("month-select");
+    if (!select) return;
+
+    select.innerHTML = "";
+
+    const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ];
+
+    months.forEach((month, index) => {
+        const option = document.createElement("option");
+        option.value = index + 1;
+        option.textContent = month;
+        select.appendChild(option);
+    });
+
+    select.value = selectedMonth;
+}
+
+function populateMonthYearDropdown() {
+    const select = document.getElementById("month-year-select");
+    if (!select) return;
+
+    select.innerHTML = "";
+
+    const currentYear = new Date().getFullYear();
+
+    for (let year = currentYear; year >= currentYear - 10; year--) {
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+        select.appendChild(option);
+    }
+
+    select.value = selectedYear;
+}
+
+function populateYearDropdown() {
+    const select = document.getElementById("year-select");
+    if (!select) return;
+
+    select.innerHTML = "";
+    const currentYear = new Date().getFullYear();
+
+    for (let year = currentYear; year >= currentYear - 10; year--) {
+        const option = document.createElement("option");
+        
+        option.value = year;
+        option.textContent = year;
+        
+        select.appendChild(option);
+    }
+
+    select.value = selectedYear;
+}
+
+function hideAllPanels() {
+    document.getElementById("month-panel").style.display = "none";
+    document.getElementById("date-panel").style.display = "none";
+    document.getElementById("year-panel").style.display = "none";
+    document.getElementById("custom-filters").style.display = "none";
+}
+
+function showPanel(panelId) {
+    hideAllPanels();
+    document.getElementById(panelId).style.display = "block";
 }
 
 function renderUptimeDowntimeChart(data) {
@@ -263,17 +345,33 @@ function selectHistoryRange(range) {
         document.getElementById(`tab-${range}`).classList.add("active");
     }
 
-    const filters = document.getElementById("custom-filters");
+    switch (range) {
+        case "7d":
+            hideAllPanels();
+            loadHistory();
+            break;
 
-    if (range === "custom") {
-        filters.style.display = "block";
-        return; // Wait for Apply Filter button to trigger loadHistory()
-    } else {
-        filters.style.display = "none";
+        case "month":
+            populateMonthDropdown();
+            populateMonthYearDropdown();
+            showPanel("month-panel");
+            break;
+
+        case "date":
+            showPanel("date-panel");
+            break;
+
+        case "year":
+            populateYearDropdown();
+            showPanel("year-panel");
+            break;
+
+        case "custom":
+            showPanel("custom-filters");
+            break;
     }
 
     console.log("Selected:", range);
-    loadHistory(); 
 }
 
 async function loadMachines() {
@@ -306,22 +404,7 @@ async function loadMachines() {
 
 async function loadHistory() {
     try {
-        let url = `/api/history?range=${currentRange}`;
-
-        if (currentRange === "custom") {
-            const machineId = document.getElementById("machine-select").value;
-            const fromDate = document.getElementById("from-date").value;
-            const toDate = document.getElementById("to-date").value;
-            const shifts = [...document.querySelectorAll('.shift-selector input[type="checkbox"]:checked')]
-                .map(cb => cb.value)
-                .join(",");
-
-            if (!machineId || !fromDate || !toDate) {
-                return; // Stop execution if validation fails
-            }
-
-            url += `&machine_id=${machineId}&from_date=${fromDate}&to_date=${toDate}&shifts=${shifts}`;
-        }
+        const url = buildHistoryUrl("/api/history");
 
         const response = await fetch(url, {
             cache: "no-store"
@@ -338,11 +421,26 @@ async function loadHistory() {
             return;
         }
 
-        document.getElementById("machine-name").textContent = data.machine || "Unknown Machine";
-        document.getElementById("history-range").textContent = `${formatDate(data.from_date)} to ${formatDate(data.to_date)}`;
-        document.getElementById("overall-efficiency").textContent = `${Number(data.weighted_efficiency_pct).toFixed(2)}%`;
-        document.getElementById("total-uptime").textContent = formatDuration(data.total_uptime_seconds);
-        document.getElementById("total-downtime").textContent = formatDuration(data.total_downtime_seconds);
+        const machineName = document.getElementById("machine-name");
+        const historyRange = document.getElementById("history-range");
+
+        if (machineName) {
+            machineName.textContent = data.machine || "Unknown Machine";
+        }
+
+        if (historyRange) {
+            historyRange.textContent =
+                `${formatDate(data.from_date)} to ${formatDate(data.to_date)}`;
+        }
+
+        document.getElementById("overall-efficiency").textContent =
+            `${Number(data.weighted_efficiency_pct).toFixed(2)}%`;
+
+        document.getElementById("total-uptime").textContent =
+            formatDuration(data.total_uptime_seconds);
+
+        document.getElementById("total-downtime").textContent =
+            formatDuration(data.total_downtime_seconds);
 
         const dailyRows = Array.isArray(data.daily) ? data.daily : [];
         const shiftRows = Array.isArray(data.shifts) ? data.shifts : [];
@@ -356,6 +454,168 @@ async function loadHistory() {
         console.error("History loading failed:", error);
         showHistoryError(error.message || "Unable to load history");
     }
+}
+
+function buildHistoryUrl(baseUrl) {
+    let url = `${baseUrl}?range=${currentRange}`;
+
+    if (currentRange === "month") {
+        const month = document.getElementById("month-select").value;
+        const year = document.getElementById("month-year-select").value;
+        url += `&year=${year}&month=${month}`;
+    }
+
+    if (currentRange === "date") {
+        const date = document.getElementById("history-date").value;
+
+        if (!date) {
+            alert("Please select a date.");
+            return;
+        }
+
+        url += `&date=${date}`;
+    }
+
+    if (currentRange === "year") {
+        const year = document.getElementById("year-select").value;
+        url += `&year=${year}`;
+    }
+
+    if (currentRange === "custom") {
+        const machineId = document.getElementById("machine-select").value;
+        const fromDate = document.getElementById("from-date").value;
+        const toDate = document.getElementById("to-date").value;
+        const shifts = [...document.querySelectorAll('.shift-selector input[type="checkbox"]:checked')]
+            .map(cb => cb.value)
+            .join(",");
+
+        if (!machineId || !fromDate || !toDate) {
+            return;
+        }
+
+        url += `&machine_id=${machineId}&from_date=${fromDate}&to_date=${toDate}&shifts=${shifts}`;
+    }
+
+    return url;
+}
+
+async function downloadPdfReport() {
+
+    const payload = {
+        range: currentRange
+    };
+
+    if (currentRange === "month") {
+
+        payload.month = Number(
+            document.getElementById(
+                "month-select"
+            ).value
+        );
+
+        payload.year = Number(
+            document.getElementById(
+                "month-year-select"
+            ).value
+        );
+    }
+
+    if (currentRange === "date") {
+
+        payload.date =
+            document.getElementById(
+                "history-date"
+            ).value;
+    }
+
+    if (currentRange === "year") {
+
+        payload.year = Number(
+            document.getElementById(
+                "year-select"
+            ).value
+        );
+    }
+
+    if (currentRange === "custom") {
+
+        payload.machine_id =
+            Number(
+                document.getElementById(
+                    "machine-select"
+                ).value
+            );
+
+        payload.from_date =
+            document.getElementById(
+                "from-date"
+            ).value;
+
+        payload.to_date =
+            document.getElementById(
+                "to-date"
+            ).value;
+
+        payload.shifts =
+            [...document.querySelectorAll(
+                '.shift-selector input[type="checkbox"]:checked'
+            )]
+            .map(cb => cb.value)
+            .join(",");
+    }
+
+    payload.uptime_chart =
+        uptimeDowntimeChart
+            ? uptimeDowntimeChart.toBase64Image()
+            : null;
+
+    payload.trend_chart =
+        efficiencyTrendChart
+            ? efficiencyTrendChart.toBase64Image()
+            : null;
+
+    const response = await fetch(
+        "/api/history/export/pdf",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+            body: JSON.stringify(payload)
+        }
+    );
+
+    if (!response.ok) {
+
+        alert(
+            "Unable to generate PDF."
+        );
+
+        return;
+    }
+
+    const blob =
+        await response.blob();
+
+    const url =
+        window.URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        "History_Report.pdf";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
 }
 
 function updateSystemClock() {
@@ -381,6 +641,10 @@ document
     .addEventListener("click", () => selectHistoryRange("month"));
 
 document
+    .getElementById("tab-date")
+    .addEventListener("click", () => selectHistoryRange("date"));
+
+document
     .getElementById("tab-year")
     .addEventListener("click", () => selectHistoryRange("year"));
 
@@ -392,8 +656,51 @@ document
     .getElementById("apply-custom-filter")
     .addEventListener("click", loadHistory);
 
+document
+    .getElementById("apply-month-filter")
+    .addEventListener("click", () => {
+        selectedMonth = Number(
+            document.getElementById("month-select").value
+        );
+        selectedYear = Number(
+            document.getElementById("month-year-select").value
+        );
+        loadHistory();
+    });
+
+document
+    .getElementById("apply-year-filter")
+    .addEventListener("click", () => {
+        selectedYear = Number(
+            document.getElementById("year-select").value
+        );
+        loadHistory();
+    });
+
+document
+    .getElementById("apply-date-filter")
+    .addEventListener("click", loadHistory);
+
+document
+    .getElementById("download-excel")
+    .addEventListener("click", () => {
+        window.location.href = buildHistoryUrl("/api/history/export/excel");
+    });
+
+document
+    .getElementById("download-pdf")
+    .addEventListener(
+        "click",
+        downloadPdfReport
+    );
+
 // Initial load
 updateSystemClock();
 setInterval(updateSystemClock, 1000);
 loadMachines();
 loadHistory();
+
+const historyDate = document.getElementById("history-date");
+if (historyDate) {
+    historyDate.value = new Date().toISOString().split("T")[0];
+}

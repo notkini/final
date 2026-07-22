@@ -4,6 +4,7 @@ from app.routes.today import today_bp
 from app.routes.timeline import timeline_bp
 from app.routes.history import history_bp
 from app.routes.machine import machine_bp
+from app.routes.export import export_bp
 
 def create_app():
     app = Flask(
@@ -25,6 +26,7 @@ def create_app():
     app.register_blueprint(timeline_bp)
     app.register_blueprint(history_bp)
     app.register_blueprint(machine_bp)
+    app.register_blueprint(export_bp)
 
     return app
 
