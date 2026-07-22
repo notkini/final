@@ -49,6 +49,7 @@ class Config:
     DEBOUNCE_SECONDS = float(os.getenv("DEBOUNCE_SECONDS", "0.08"))
     ACTIVE_HIGH = _get_bool("ACTIVE_HIGH", True)
     SIMULATION_MODE = _get_bool("SIMULATION_MODE", True)
+    DEBUG = _get_bool("DEBUG", False)
 
     SHIFTS = {
         "A": {"start": "06:00", "end": "14:00"},

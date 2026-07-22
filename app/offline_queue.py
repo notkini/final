@@ -20,6 +20,7 @@ _SCHEMA = """
 CREATE TABLE IF NOT EXISTS queued_events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     event_key TEXT NOT NULL UNIQUE,
+    machine_id INTEGER NOT NULL,
     state TEXT NOT NULL,
     event_time TEXT NOT NULL,
     source TEXT NOT NULL DEFAULT 'gpio',
@@ -49,6 +50,7 @@ def _conn():
 
 
 def enqueue_event(
+    machine_id: int,
     state: str,
     event_time: datetime,
     source: str = "gpio",
@@ -69,11 +71,19 @@ def enqueue_event(
         conn.execute(
             """
             INSERT OR IGNORE INTO queued_events
-            (event_key, state, event_time, source, queued_at)
-            VALUES (?, ?, ?, ?, ?)
+            (
+                event_key,
+                machine_id,
+                state,
+                event_time,
+                source,
+                queued_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
             (
                 event_key,
+                machine_id,
                 state,
                 event_time.isoformat(),
                 source,
@@ -82,8 +92,9 @@ def enqueue_event(
         )
 
     logger.warning(
-        "Postgres unreachable -- queued %s event @ %s locally",
+        "Postgres unreachable -- queued %s event for machine %s @ %s locally",
         state,
+        machine_id,
         event_time,
     )
 
@@ -101,12 +112,18 @@ def fetch_all_pending():
     Return rows in original event-time order.
 
     Tuple format:
-        (id, event_key, state, event_time, source)
+        (id, event_key, machine_id, state, event_time, source)
     """
     with _conn() as conn:
         cursor = conn.execute(
             """
-            SELECT id, event_key, state, event_time, source
+            SELECT
+                id,
+                event_key,
+                machine_id,
+                state,
+                event_time,
+                source
             FROM queued_events
             ORDER BY event_time ASC, id ASC
             """

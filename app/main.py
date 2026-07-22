@@ -1,10 +1,14 @@
 from flask import Flask
+from waitress import serve
+
+from app.config import config
 from app.routes.status import status_bp
 from app.routes.today import today_bp
 from app.routes.timeline import timeline_bp
 from app.routes.history import history_bp
 from app.routes.machine import machine_bp
 from app.routes.export import export_bp
+
 
 def create_app():
     app = Flask(
@@ -35,8 +39,17 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=8000,
-        debug=True,
-    )
+    # Use Flask's development server only when DEBUG is enabled.
+    if getattr(config, "DEBUG", False):
+        app.run(
+            host="0.0.0.0",
+            port=8000,
+            debug=True,
+        )
+    else:
+        serve(
+            app,
+            host="0.0.0.0",
+            port=8000,
+            threads=8,
+        )
