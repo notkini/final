@@ -140,9 +140,36 @@ def _save_shift_performance(
         as_of=as_of,
     )
 
-    # No monitoring occurred during this shift.
-    if not monitoring_windows:
-        return
+    shift_date_value = _local_midnight_datetime(
+        window.shift_date
+    )
+
+    row = session.scalars(
+        select(ShiftPerformance)
+        .where(
+            ShiftPerformance.machine_id == machine_id
+        )
+        .where(
+            ShiftPerformance.shift_date
+            == shift_date_value
+        )
+        .where(
+            ShiftPerformance.shift_name
+            == window.shift_name
+        )
+    ).first()
+
+    if row is None:
+        if not monitoring_windows:
+            return
+
+        row = ShiftPerformance(
+            machine_id=machine_id,
+            shift_date=shift_date_value,
+            shift_name=window.shift_name,
+        )
+
+        session.add(row)
 
     events_in_window = session.scalars(
         select(MachineEvent)
@@ -186,52 +213,28 @@ def _save_shift_performance(
         initial_state=initial_state,
     )
 
-    shift_date_value = _local_midnight_datetime(
-        window.shift_date
-    )
-
-    row = session.scalars(
-        select(ShiftPerformance)
-        .where(
-            ShiftPerformance.machine_id == machine_id
-        )
-        .where(
-            ShiftPerformance.shift_date
-            == shift_date_value
-        )
-        .where(
-            ShiftPerformance.shift_name
-            == window.shift_name
-        )
-    ).first()
-
-    if row is None:
-        row = ShiftPerformance(
-            machine_id=machine_id,
-            shift_date=shift_date_value,
-            shift_name=window.shift_name,
-        )
-
-        session.add(row)
-
     row.up_seconds = result.up_seconds
     row.down_seconds = result.down_seconds
     row.efficiency_pct = result.efficiency_pct
     row.is_final = result.is_final
+    session.flush()
     
     machine = session.get(
         Machine,
         machine_id,
     )
 
-    update_shift_report(
-        machine_name=machine.machine_name,
-        shift_date=window.shift_date,
-        shift_name=window.shift_name,
-        up_seconds=result.up_seconds,
-        down_seconds=result.down_seconds,
-        efficiency=result.efficiency_pct,
-    )
+    try:
+        update_shift_report(
+            machine_name=machine.machine_name,
+            shift_date=window.shift_date,
+            shift_name=window.shift_name,
+            up_seconds=result.up_seconds,
+            down_seconds=result.down_seconds,
+            efficiency=result.efficiency_pct,
+        )
+    except Exception:
+        logger.exception("Failed to update Excel report")
 
 
 def _backfill_machine(
